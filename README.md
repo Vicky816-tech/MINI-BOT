@@ -52,7 +52,7 @@
 **ɢɪᴛʜᴜʙ ᴅᴇᴘʟᴏʏᴍᴇɴᴛ** 
 
 ```
-name: Node.js Auto-Restart CI
+name: Node.js CI
 
 on:
   push:
@@ -61,8 +61,6 @@ on:
   pull_request:
     branches:
       - main
-  schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
 
 jobs:
   build:
@@ -73,30 +71,19 @@ jobs:
         node-version: [20.x]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Install FFmpeg
-      run: sudo apt-get install -y ffmpeg
-
-    - name: Start application with timeout
-      run: |
-        timeout 21600s npm start  # 6 hours max
-
-    - name: Auto-commit to trigger restart
-      run: |
-        git config --global user.email "autorestart@bot.com"
-        git config --global user.name "Auto Restart Bot"
-        git commit --allow-empty -m "⏱️ Automatic bot restart"
-        git push
+      - name: Start application
+        run: npm start
 ```
 
 ---
